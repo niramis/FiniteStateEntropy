@@ -53,8 +53,8 @@ void FIO_overwriteMode(void);
 /**************************************
 *  Stream/File functions
 **************************************/
-unsigned long long FIO_compressFilename (const char* outfilename, const char* infilename);
-unsigned long long FIO_decompressFilename (const char* outfilename, const char* infilename);
+unsigned long long FIO_compressFilename(const char* outfilename, const char* infilename, const char* password);
+unsigned long long FIO_decompressFilename (const char* outfilename, const char* infilename, const char* password);
 /*
 FIO_compressFilename :
     result : size of compressed file

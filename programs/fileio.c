@@ -285,7 +285,7 @@ COMPRESSEDBLOCK
 STREAMCRC - 3 bytes (including 1-byte blockheader)
     22 bits (xxh32() >> 5) checksum of the original data, big endian
 */
-unsigned long long FIO_compressFilename(const char* output_filename, const char* input_filename)
+unsigned long long FIO_compressFilename(const char* output_filename, const char* input_filename, const char* password)
 {
     U64 filesize = 0;
     U64 compressedfilesize = 0;
@@ -299,9 +299,7 @@ unsigned long long FIO_compressFilename(const char* output_filename, const char*
     typedef size_t (*compressor_t) (void* dst, size_t dstSize, const void* src, size_t srcSize, unsigned scrambler);
     compressor_t compressor;
     unsigned magicNumber;
-	unsigned scrambler = 10;
-
-
+	
     /* Init */
     XXH32_reset (&xxhState, FSE_CHECKSUM_SEED);
     get_fileHandle(input_filename, output_filename, &finput, &foutput);
@@ -339,6 +337,8 @@ unsigned long long FIO_compressFilename(const char* output_filename, const char*
     /* Main compression loop */
     while (1)
     {
+		if (password){}
+		unsigned scrambler = 10; // wartoœæ powinna siê zmieniaæ w zale¿noœci od has³a przy encodowaniu kolejnych bloków
         /* Fill input Buffer */
         size_t cSize;
         size_t inSize = fread(in_buff, (size_t)1, (size_t)inputBlockSize, finput);
@@ -475,7 +475,7 @@ COMPRESSEDBLOCK
 STREAMCRC - 3 bytes (including 1-byte blockheader)
     22 bits (xxh32() >> 5) checksum of the original data, big endian
 */
-unsigned long long FIO_decompressFilename(const char* output_filename, const char* input_filename)
+unsigned long long FIO_decompressFilename(const char* output_filename, const char* input_filename, const char* password)
 {
     FILE* finput, *foutput;
     U64   filesize = 0;
@@ -492,8 +492,7 @@ unsigned long long FIO_decompressFilename(const char* output_filename, const cha
     size_t inputBufferSize;
     XXH32_state_t xxhState;
     typedef size_t (*decompressor_t) (void* dst, size_t dstSize, const void* src, size_t srcSize, unsigned);
-    decompressor_t decompressor = FSE_decompress;
-	unsigned scrambler = 10;
+    decompressor_t decompressor = FSE_decompress;	
 
     /* Init */
     XXH32_reset(&xxhState, FSE_CHECKSUM_SEED);
@@ -536,6 +535,8 @@ unsigned long long FIO_decompressFilename(const char* output_filename, const cha
     /* Main Loop */
     while (1)
     {
+		if (password){}
+		unsigned scrambler = 10; // wartoœæ powinna siê zmieniaæ w zale¿noœci od has³a przy encodowaniu kolejnych bloków
         size_t toReadSize, readSize, bType, rSize=0, cSize;
 
         //static U32 blockNb=0;

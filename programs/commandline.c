@@ -336,11 +336,11 @@ int main(int argc, char** argv)
     if (!strcmp(input_filename, stdinmark)  && IS_CONSOLE(stdin) ) badusage();
     if (!strcmp(output_filename,stdoutmark) && IS_CONSOLE(stdout)) badusage();
 
-    if (decode) FIO_decompressFilename(output_filename, input_filename);
+    if (decode) FIO_decompressFilename(output_filename, input_filename, passwordValue);
     else
     {
         FIO_setCompressor(compressor);
-        FIO_compressFilename(output_filename, input_filename);
+		FIO_compressFilename(output_filename, input_filename, passwordValue);
     }
 
 _end:
