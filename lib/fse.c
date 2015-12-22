@@ -88,7 +88,6 @@ typedef struct
 #  endif
 #endif
 
-
 /****************************************************************
 *  Includes
 ****************************************************************/
@@ -112,7 +111,6 @@ typedef struct
 #if FSE_MAX_TABLELOG > FSE_TABLELOG_ABSOLUTE_MAX
 #error "FSE_MAX_TABLELOG > FSE_TABLELOG_ABSOLUTE_MAX is not supported"
 #endif
-
 
 /****************************************************************
 *  Error Management
@@ -304,6 +302,15 @@ size_t FSE_FUNCTION_NAME(FSE_buildCTable, FSE_FUNCTION_EXTENSION)
         }
     }
 
+	// tutaj dodaæ jakiœ scrambler z mieszaniem opatry na haœle
+	FSE_FUNCTION_TYPE item;
+	for (i = 0; i < tableSize-1; i++) 
+	{
+		item = tableSymbol[i];
+		tableSymbol[i] = tableSymbol[i + 1];
+		tableSymbol[i + 1] = item;
+	}
+
     if (position!=0) return ERROR(GENERIC);   /* Must have gone through all positions */
 
     /* Build table */
@@ -409,6 +416,15 @@ size_t FSE_FUNCTION_NAME(FSE_buildDTable, FSE_FUNCTION_EXTENSION)
             while (position > highThreshold) position = (position + step) & tableMask;   /* lowprob area */
         }
     }
+
+	// tutaj dodaæ jakiœ scrambler odmieszaj¹cy
+	FSE_DECODE_TYPE item;
+	for (s = 0; s < tableSize - 1; s++)
+	{
+		item = tableDecode[s];
+		tableDecode[s] = tableDecode[s + 1];
+		tableDecode[s + 1] = item;
+	}
 
     if (position!=0) return ERROR(GENERIC);   /* position must reach all cells once, otherwise normalizedCounter is incorrect */
 

@@ -99,6 +99,7 @@ static int usage(void)
     DISPLAY("(default): fse core loop timing tests\n");
     DISPLAY(" -e : use fse (default)\n");
     DISPLAY(" -h : use huff0\n");
+	DISPLAY(" -p#: use password to encode\\decode\n");
     DISPLAY(" -z : use zlib's huffman\n");
     DISPLAY(" -d : decompression (default for %s extension)\n", FSE_EXTENSION);
     DISPLAY(" -b : benchmark mode\n");
@@ -132,6 +133,7 @@ int main(int argc, char** argv)
     int   indexFileNames=0;
     const char* input_filename = NULL;
     const char* output_filename= NULL;
+	const char* passwordValue = NULL;
     char*  tmpFilenameBuffer   = NULL;
     size_t tmpFilenameSize     = 0;
     char  extension[] = FSE_EXTENSION;
@@ -241,7 +243,14 @@ int main(int argc, char** argv)
                     break;
 
                     // Pause at the end (hidden option)
-                case 'p': fse_pause=1; break;
+                case 'P': fse_pause=1; break;
+
+				case 'p':
+					argument++;
+					passwordValue = argument;
+					argument = "";
+					break;
+
 
                     // Change FSE table size (hidden option)
                 case 'M':

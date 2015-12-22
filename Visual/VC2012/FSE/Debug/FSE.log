@@ -1,0 +1,25 @@
+﻿Build started 2015-12-22 00:36:53.
+     1>Project "F:\Dokumenty\Studia\Magisterka\Projekt indywidualny\Projekt\FiniteStateEntropy\Visual\VC2012\FSE\FSE.vcxproj" on node 2 (Build target(s)).
+     1>ClCompile:
+         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\CL.exe /c /ZI /nologo /W4 /WX /Od /Oy- /D CODE_ANALYSIS /D WIN32 /D _DEBUG /D _CONSOLE /D _UNICODE /D UNICODE /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug\\" /Fd"Debug\vc120.pdb" /Gd /TC /analyze /analyze:plugin"C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\\bin\localespc.dll" /errorReport:prompt /analyze:stacksize18000   /analyze:quiet ..\..\..\programs\commandline.c
+         commandline.c
+       Link:
+         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"F:\Dokumenty\Studia\Magisterka\Projekt indywidualny\Projekt\FiniteStateEntropy\Visual\VC2012\Debug\FSE.exe" /INCREMENTAL /NOLOGO kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"F:\Dokumenty\Studia\Magisterka\Projekt indywidualny\Projekt\FiniteStateEntropy\Visual\VC2012\Debug\FSE.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"F:\Dokumenty\Studia\Magisterka\Projekt indywidualny\Projekt\FiniteStateEntropy\Visual\VC2012\Debug\FSE.lib" /MACHINE:X86 Debug\fse.obj
+         Debug\fseU16.obj
+         Debug\huff0.obj
+         Debug\bench.obj
+         Debug\commandline.obj
+         Debug\fileio.obj
+         Debug\xxhash.obj
+         Debug\zlibh.obj
+         FSE.vcxproj -> F:\Dokumenty\Studia\Magisterka\Projekt indywidualny\Projekt\FiniteStateEntropy\Visual\VC2012\Debug\FSE.exe
+     1>f:\dokumenty\studia\magisterka\projekt indywidualny\projekt\finitestateentropy\lib\fse.c(312): warning C6001: Using uninitialized memory 'tableSymbol'.
+     1>f:\dokumenty\studia\magisterka\projekt indywidualny\projekt\finitestateentropy\lib\fse.c(184): warning C6236: (<expression> || <non-zero constant>) is always a non-zero constant.
+     1>f:\dokumenty\studia\magisterka\projekt indywidualny\projekt\finitestateentropy\lib\bitstream.h(155): warning C6001: Using uninitialized memory 'r'.
+     1>f:\dokumenty\studia\magisterka\projekt indywidualny\projekt\finitestateentropy\lib\huff0.c(1519): warning C6262: Function uses '24604' bytes of stack:  exceeds /analyze:stacksize '18000'.  Consider moving some data to heap.
+     1>f:\dokumenty\studia\magisterka\projekt indywidualny\projekt\finitestateentropy\lib\huff0.c(1631): warning C6262: Function uses '24604' bytes of stack:  exceeds /analyze:stacksize '18000'.  Consider moving some data to heap.
+     1>Done Building Project "F:\Dokumenty\Studia\Magisterka\Projekt indywidualny\Projekt\FiniteStateEntropy\Visual\VC2012\FSE\FSE.vcxproj" (Build target(s)).
+
+Build succeeded.
+
+Time Elapsed 00:00:00.77
