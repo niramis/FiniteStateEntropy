@@ -255,7 +255,7 @@ size_t FSE_FUNCTION_NAME(FSE_count, FSE_FUNCTION_EXTENSION)
 static U32 FSE_tableStep(U32 tableSize) { return (tableSize>>1) + (tableSize>>3) + 3; }
 
 size_t FSE_FUNCTION_NAME(FSE_buildCTable, FSE_FUNCTION_EXTENSION)
-(FSE_CTable* ct, const short* normalizedCounter, unsigned maxSymbolValue, unsigned tableLog)
+(FSE_CTable* ct, const short* normalizedCounter, unsigned maxSymbolValue, unsigned tableLog, unsigned scrambler)
 {
     const unsigned tableSize = 1 << tableLog;
     const unsigned tableMask = tableSize - 1;
@@ -304,11 +304,11 @@ size_t FSE_FUNCTION_NAME(FSE_buildCTable, FSE_FUNCTION_EXTENSION)
 
 	// tutaj dodaæ jakiœ scrambler z mieszaniem opatry na haœle
 	FSE_FUNCTION_TYPE item;
-	for (i = 0; i < tableSize-1; i++) 
+	for (i = 0; i < tableSize - scrambler; i++)
 	{
 		item = tableSymbol[i];
-		tableSymbol[i] = tableSymbol[i + 1];
-		tableSymbol[i + 1] = item;
+		tableSymbol[i] = tableSymbol[i + scrambler];
+		tableSymbol[i + scrambler] = item;
 	}
 
     if (position!=0) return ERROR(GENERIC);   /* Must have gone through all positions */
@@ -1111,7 +1111,7 @@ size_t FSE_compress2 (void* dst, size_t dstSize, const void* src, size_t srcSize
     op += errorCode;
 
     /* Compress */
-    errorCode = FSE_buildCTable (ct, norm, maxSymbolValue, tableLog);
+    errorCode = FSE_buildCTable (ct, norm, maxSymbolValue, tableLog, 1);
     if (FSE_isError(errorCode)) return errorCode;
     errorCode = FSE_compress_usingCTable(op, oend - op, ip, srcSize, ct);
     if (errorCode == 0) return 0;   /* not enough space for compressed data */

@@ -172,7 +172,7 @@ FSE_buildCTable():
    Builds 'ct', which must be already allocated, using FSE_createCTable()
    return : 0
             or an errorCode, which can be tested using FSE_isError() */
-size_t FSE_buildCTable(FSE_CTable* ct, const short* normalizedCounter, unsigned maxSymbolValue, unsigned tableLog);
+size_t FSE_buildCTable(FSE_CTable* ct, const short* normalizedCounter, unsigned maxSymbolValue, unsigned tableLog, unsigned scrambler);
 
 /*
 FSE_compress_usingCTable():

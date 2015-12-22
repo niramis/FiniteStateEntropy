@@ -637,7 +637,7 @@ static void BMK_benchCore_Mem(char* dst,
     FSE_count(count, &nbSymbols, (BYTE*)src, benchedSize);
     tableLog = (U32)FSE_normalizeCount(norm, tableLog, count, benchedSize, nbSymbols);
     ct = FSE_createCTable(tableLog, nbSymbols);
-    FSE_buildCTable(ct, norm, nbSymbols, tableLog);
+    FSE_buildCTable(ct, norm, nbSymbols, tableLog, 1);
     dt = FSE_createDTable(tableLog);
     FSE_buildDTable(dt, norm, nbSymbols, tableLog);
 

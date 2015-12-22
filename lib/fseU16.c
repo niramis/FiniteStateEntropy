@@ -189,7 +189,7 @@ size_t FSE_compressU16(void* dst, size_t maxDstSize,
     op += errorCode;
 
     /* Compress */
-    errorCode = FSE_buildCTableU16 (ct, norm, maxSymbolValue, tableLog);
+    errorCode = FSE_buildCTableU16 (ct, norm, maxSymbolValue, tableLog, 1);
     if (FSE_isError(errorCode)) return errorCode;
     op += FSE_compressU16_usingCTable (op, omax - op, ip, srcSize, ct);
 
