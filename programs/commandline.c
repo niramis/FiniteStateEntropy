@@ -327,7 +327,7 @@ int main(int argc, char** argv)
             output_filename = tmpFilenameBuffer;
             DISPLAYLEVEL(2, "Decoding into filename : %s \n", output_filename);
         }
-    }
+    } 
 
     /* No warning message in pure pipe mode (stdin + stdout) */
     if (!strcmp(input_filename, stdinmark) && !strcmp(output_filename,stdoutmark) && (displayLevel==2)) displayLevel=1;

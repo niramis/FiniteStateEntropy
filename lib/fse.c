@@ -300,7 +300,7 @@ size_t FSE_FUNCTION_NAME(FSE_buildCTable, FSE_FUNCTION_EXTENSION)
             position = (position + step) & tableMask;
             while (position > highThreshold) position = (position + step) & tableMask;   /* Lowprob area */
         }
-    }
+    } 
 
 	// tutaj dodaæ jakiœ scrambler z mieszaniem opatry na haœle
 	FSE_FUNCTION_TYPE item;
