@@ -259,9 +259,10 @@ static void get_fileHandle(const char* input_filename, const char* output_filena
 }
 
 
-size_t FIO_ZLIBH_compress(void* dst, size_t dstSize, const void* src, size_t srcSize )
+size_t FIO_ZLIBH_compress(void* dst, size_t dstSize, const void* src, size_t srcSize, unsigned scrambler)
 {
-    (void)dstSize;
+	if (scrambler) 	{	}
+	(void)dstSize;
     return (size_t)ZLIBH_compress((char*)dst, (const char*)src, (int)srcSize);
 }
 
@@ -295,9 +296,10 @@ unsigned long long FIO_compressFilename(const char* output_filename, const char*
     size_t sizeCheck;
     size_t inputBlockSize  = FIO_blockID_to_blockSize(g_blockSizeId);
     XXH32_state_t xxhState;
-    typedef size_t (*compressor_t) (void* dst, size_t dstSize, const void* src, size_t srcSize);
+    typedef size_t (*compressor_t) (void* dst, size_t dstSize, const void* src, size_t srcSize, unsigned scrambler);
     compressor_t compressor;
     unsigned magicNumber;
+	unsigned scrambler = 10;
 
 
     /* Init */
@@ -346,7 +348,7 @@ unsigned long long FIO_compressFilename(const char* output_filename, const char*
         DISPLAYUPDATE(2, "\rRead : %u MB   ", (U32)(filesize>>20));
 
         /* Compress Block */
-        cSize = compressor(out_buff + FIO_maxBlockHeaderSize, FSE_compressBound(inputBlockSize), in_buff, inSize);
+		cSize = compressor(out_buff + FIO_maxBlockHeaderSize, FSE_compressBound(inputBlockSize), in_buff, inSize, scrambler);
         if (FSE_isError(cSize)) EXM_THROW(23, "Compression error : %s ", FSE_getErrorName(cSize));
 
         /* Write cBlock */
@@ -444,8 +446,12 @@ unsigned long long FIO_compressFilename(const char* output_filename, const char*
 
 
 
-size_t FIO_ZLIBH_decompress(void* dst, size_t dstSize, const void* src, size_t srcSize)
+size_t FIO_ZLIBH_decompress(void* dst, size_t dstSize, const void* src, size_t srcSize, unsigned scrambler)
 {
+	if (scrambler)
+	{
+		
+	}
     (void)srcSize; (void)dstSize;
     return (size_t) ZLIBH_decompress ((char*)dst, (const char*)src);
 }
@@ -485,9 +491,9 @@ unsigned long long FIO_decompressFilename(const char* output_filename, const cha
     U32*  magicNumberP = header32;
     size_t inputBufferSize;
     XXH32_state_t xxhState;
-    typedef size_t (*decompressor_t) (void* dst, size_t dstSize, const void* src, size_t srcSize);
+    typedef size_t (*decompressor_t) (void* dst, size_t dstSize, const void* src, size_t srcSize, unsigned);
     decompressor_t decompressor = FSE_decompress;
-
+	unsigned scrambler = 10;
 
     /* Init */
     XXH32_reset(&xxhState, FSE_CHECKSUM_SEED);
@@ -527,7 +533,6 @@ unsigned long long FIO_decompressFilename(const char* output_filename, const cha
     /* read first bHeader */
     sizeCheck = fread(in_buff, 1, 1, finput);
     if (sizeCheck != 1) EXM_THROW(34, "Read error : cannot read header\n");
-
     /* Main Loop */
     while (1)
     {
@@ -574,7 +579,7 @@ unsigned long long FIO_decompressFilename(const char* output_filename, const cha
         switch(bType)
         {
           case bt_compressed :
-            rSize = decompressor(out_buff, rSize, in_buff, cSize);
+			  rSize = decompressor(out_buff, rSize, in_buff, cSize, scrambler);
             if (FSE_isError(rSize)) EXM_THROW(39, "Decoding error : %s", FSE_getErrorName(rSize));
             break;
           case bt_raw :

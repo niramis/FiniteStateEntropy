@@ -49,9 +49,9 @@ extern "C" {
 *  Huff0 simple functions
 ******************************************/
 size_t HUF_compress(void* dst, size_t maxDstSize,
-              const void* src, size_t srcSize);
+              const void* src, size_t srcSize, unsigned scrambler);
 size_t HUF_decompress(void* dst,  size_t dstSize,
-                const void* cSrc, size_t cSrcSize);
+                const void* cSrc, size_t cSrcSize, unsigned scrambler);
 /*
 HUF_compress():
     Compress content of buffer 'src', of size 'srcSize', into destination buffer 'dst'.
@@ -85,7 +85,7 @@ const char* HUF_getErrorName(size_t code);   /* provides error code string (usef
 /******************************************
 *  Advanced functions
 ******************************************/
-size_t HUF_compress2 (void* dst, size_t dstSize, const void* src, size_t srcSize, unsigned maxSymbolValue, unsigned tableLog);
+size_t HUF_compress2 (void* dst, size_t dstSize, const void* src, size_t srcSize, unsigned maxSymbolValue, unsigned tableLog, unsigned scrambler);
 
 
 #if defined (__cplusplus)

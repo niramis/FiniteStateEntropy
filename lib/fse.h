@@ -49,9 +49,9 @@ extern "C" {
 *  FSE simple functions
 ******************************************/
 size_t FSE_compress(void* dst, size_t maxDstSize,
-              const void* src, size_t srcSize);
+              const void* src, size_t srcSize, unsigned scrambler);
 size_t FSE_decompress(void* dst,  size_t maxDstSize,
-                const void* cSrc, size_t cSrcSize);
+                const void* cSrc, size_t cSrcSize, unsigned scrambler);
 /*
 FSE_compress():
     Compress content of buffer 'src', of size 'srcSize', into destination buffer 'dst'.
@@ -95,7 +95,7 @@ FSE_compress2():
                      if return == 1, srcData is a single byte symbol * srcSize times. Use RLE compression.
                      if FSE_isError(return), it's an error code.
 */
-size_t FSE_compress2 (void* dst, size_t dstSize, const void* src, size_t srcSize, unsigned maxSymbolValue, unsigned tableLog);
+size_t FSE_compress2 (void* dst, size_t dstSize, const void* src, size_t srcSize, unsigned maxSymbolValue, unsigned tableLog, unsigned scrambler);
 
 
 /******************************************
@@ -248,7 +248,7 @@ FSE_buildDTable():
    Builds 'dt', which must be already allocated, using FSE_createDTable()
    return : 0,
             or an errorCode, which can be tested using FSE_isError() */
-size_t FSE_buildDTable (FSE_DTable* dt, const short* normalizedCounter, unsigned maxSymbolValue, unsigned tableLog);
+size_t FSE_buildDTable (FSE_DTable* dt, const short* normalizedCounter, unsigned maxSymbolValue, unsigned tableLog, unsigned scrambler);
 
 /*
 FSE_decompress_usingDTable():

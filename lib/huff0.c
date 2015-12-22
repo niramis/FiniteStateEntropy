@@ -115,7 +115,8 @@ size_t HUF_writeCTable (void* dst, size_t maxDstSize, const HUF_CElt* CTable, U3
     BYTE huffWeight[HUF_MAX_SYMBOL_VALUE + 1];
     U32 n;
     BYTE* op = (BYTE*)dst;
-    size_t size;
+	size_t size;
+	unsigned scrambler = 1;
 
      /* check conditions */
     if (maxSymbolValue > HUF_MAX_SYMBOL_VALUE + 1)
@@ -128,7 +129,7 @@ size_t HUF_writeCTable (void* dst, size_t maxDstSize, const HUF_CElt* CTable, U3
     for (n=0; n<maxSymbolValue; n++)
         huffWeight[n] = bitsToWeight[CTable[n].nbBits];
 
-    size = FSE_compress(op+1, maxDstSize-1, huffWeight, maxSymbolValue);   /* don't need last symbol stat : implied */
+	size = FSE_compress(op + 1, maxDstSize - 1, huffWeight, maxSymbolValue, scrambler);   /* don't need last symbol stat : implied */
     if (HUF_isError(size)) return size;
     if (size >= 128) return ERROR(GENERIC);   /* should never happen, since maxSymbolValue <= 255 */
     if ((size <= 1) || (size >= maxSymbolValue/2))
@@ -477,11 +478,14 @@ static size_t HUF_compress_into4Segments(void* dst, size_t dstSize, const void* 
 
 size_t HUF_compress2 (void* dst, size_t dstSize,
                 const void* src, size_t srcSize,
-                unsigned maxSymbolValue, unsigned huffLog)
+                unsigned maxSymbolValue, unsigned huffLog, unsigned scrambler)
 {
     BYTE* const ostart = (BYTE*)dst;
     BYTE* op = ostart;
     BYTE* const oend = ostart + dstSize;
+	if (scrambler)
+	{
+	}
 
     U32 count[HUF_MAX_SYMBOL_VALUE+1];
     HUF_CElt CTable[HUF_MAX_SYMBOL_VALUE+1];
@@ -526,9 +530,9 @@ size_t HUF_compress2 (void* dst, size_t dstSize,
     return op-ostart;
 }
 
-size_t HUF_compress (void* dst, size_t maxDstSize, const void* src, size_t srcSize)
+size_t HUF_compress (void* dst, size_t maxDstSize, const void* src, size_t srcSize, unsigned scrambler)
 {
-    return HUF_compress2(dst, maxDstSize, src, (U32)srcSize, 255, HUF_DEFAULT_TABLELOG);
+	return HUF_compress2(dst, maxDstSize, src, (U32)srcSize, 255, HUF_DEFAULT_TABLELOG, scrambler);
 }
 
 
@@ -555,6 +559,7 @@ static size_t HUF_readStats(BYTE* huffWeight, size_t hwSize, U32* rankStats,
     const BYTE* ip = (const BYTE*) src;
     size_t iSize = ip[0];
     size_t oSize;
+	unsigned scrambler = 1;
     U32 n;
 
     //memset(huffWeight, 0, hwSize);   /* is not necessary, even though some analyzer complain ... */
@@ -585,7 +590,7 @@ static size_t HUF_readStats(BYTE* huffWeight, size_t hwSize, U32* rankStats,
     else  /* header compressed with FSE (normal case) */
     {
         if (iSize+1 > srcSize) return ERROR(srcSize_wrong);
-        oSize = FSE_decompress(huffWeight, hwSize-1, ip+1, iSize);   /* max (hwSize-1) values decoded, as last one is implied */
+		oSize = FSE_decompress(huffWeight, hwSize - 1, ip + 1, iSize, scrambler);   /* max (hwSize-1) values decoded, as last one is implied */
         if (FSE_isError(oSize)) return oSize;
     }
 
@@ -1671,10 +1676,13 @@ static const algo_time_t algoTime[16 /* Quantization */][3 /* single, double, qu
 
 typedef size_t (*decompressionAlgo)(void* dst, size_t dstSize, const void* cSrc, size_t cSrcSize);
 
-size_t HUF_decompress (void* dst, size_t dstSize, const void* cSrc, size_t cSrcSize)
+size_t HUF_decompress (void* dst, size_t dstSize, const void* cSrc, size_t cSrcSize, unsigned scrambler)
 {
     static const decompressionAlgo decompress[3] = { HUF_decompress4X2, HUF_decompress4X4, HUF_decompress4X6 };
     /* estimate decompression time */
+	if (scrambler)
+	{	
+	}
     U32 Q;
     const U32 D256 = (U32)(dstSize >> 8);
     U32 Dtime[3];

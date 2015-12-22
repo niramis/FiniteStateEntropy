@@ -343,11 +343,23 @@ void BMK_benchMem285(chunkParameters_t* chunkP, int nbChunks, char* inFileName, 
 }
 
 
-size_t BMK_ZLIBH_compress(void* dst, size_t dstSize, const void* src, size_t srcSize, unsigned nbSymbols, unsigned tableLog)
-{ (void)nbSymbols; (void)tableLog; (void)dstSize; return ZLIBH_compress((char*)dst, (const char*)src, (int)srcSize); }
-
-size_t BMK_ZLIBH_decompress(void* dest, size_t originalSize, const void* compressed, size_t cSize)
-{ (void)cSize; ZLIBH_decompress((char*)dest, (const char*)compressed); return originalSize; }
+size_t BMK_ZLIBH_compress(void* dst, size_t dstSize, const void* src, size_t srcSize, unsigned nbSymbols, unsigned tableLog, unsigned scrambler)
+{
+	if (scrambler)
+	{
+		(void)nbSymbols;
+	}
+	(void)tableLog; (void)dstSize; return ZLIBH_compress((char*)dst, (const char*)src, (int)srcSize);
+}
+ 
+size_t BMK_ZLIBH_decompress(void* dest, size_t originalSize, const void* compressed, size_t cSize, unsigned scrambler)
+{
+	if (scrambler)
+	{
+		
+	}
+	(void)cSize; ZLIBH_decompress((char*)dest, (const char*)compressed); return originalSize;
+}
 
 
 void BMK_benchMem(chunkParameters_t* chunkP, int nbChunks, char* inFileName, int benchedSize,
@@ -355,13 +367,14 @@ void BMK_benchMem(chunkParameters_t* chunkP, int nbChunks, char* inFileName, int
                   int nbSymbols, int memLog)
 {
     int loopNb, chunkNb;
+	unsigned scrambler = 1;
     size_t cSize=0;
     double fastestC = 100000000., fastestD = 100000000.;
     double ratio=0.;
     U32 crcCheck=0;
     U32 crcOrig;
-    size_t (*compressor)(void* dst, size_t, const void* src, size_t, unsigned, unsigned);
-    size_t (*decompressor)(void* dst, size_t maxDstSize, const void* cSrc, size_t cSrcSize);
+    size_t (*compressor)(void* dst, size_t, const void* src, size_t, unsigned, unsigned, unsigned);
+    size_t (*decompressor)(void* dst, size_t maxDstSize, const void* cSrc, size_t cSrcSize, unsigned);
     size_t nameLength = strlen(inFileName);
 
     /* Init */
@@ -372,7 +385,7 @@ void BMK_benchMem(chunkParameters_t* chunkP, int nbChunks, char* inFileName, int
     {
     default:
     case 1:
-        compressor = FSE_compress2;
+		compressor = FSE_compress2;
         decompressor = FSE_decompress;
         break;
     case 2:
@@ -404,7 +417,7 @@ void BMK_benchMem(chunkParameters_t* chunkP, int nbChunks, char* inFileName, int
             for (chunkNb=0; chunkNb<nbChunks; chunkNb++)
             {
                 size_t cBSize = compressor(chunkP[chunkNb].compressedBuffer, FSE_compressBound(chunkP[chunkNb].origSize),
-                                           chunkP[chunkNb].origBuffer, chunkP[chunkNb].origSize, nbSymbols, memLog);
+                                           chunkP[chunkNb].origBuffer, chunkP[chunkNb].origSize, nbSymbols, memLog, scrambler);
                 if (FSE_isError(cBSize)) { DISPLAY("!!! Error compressing block %i  !!!!    \n", chunkNb); return; }
                 chunkP[chunkNb].compressedSize = cBSize;
             }
@@ -445,7 +458,7 @@ void BMK_benchMem(chunkParameters_t* chunkP, int nbChunks, char* inFileName, int
                     break;
                 default:
                     regenSize = decompressor(chunkP[chunkNb].destBuffer, chunkP[chunkNb].origSize,
-                                             chunkP[chunkNb].compressedBuffer, chunkP[chunkNb].compressedSize);
+						chunkP[chunkNb].compressedBuffer, chunkP[chunkNb].compressedSize, scrambler);
                 }
 
                 if (0)   /* debugging => find bad bytes */
@@ -633,13 +646,14 @@ static void BMK_benchCore_Mem(char* dst,
     FSE_DTable* dt;
 
     /* Init */
+	unsigned scrambler = 1;
     crcOrig = XXH64(src, benchedSize,0);
     FSE_count(count, &nbSymbols, (BYTE*)src, benchedSize);
     tableLog = (U32)FSE_normalizeCount(norm, tableLog, count, benchedSize, nbSymbols);
     ct = FSE_createCTable(tableLog, nbSymbols);
-    FSE_buildCTable(ct, norm, nbSymbols, tableLog, 1);
+    FSE_buildCTable(ct, norm, nbSymbols, tableLog, scrambler);
     dt = FSE_createDTable(tableLog);
-    FSE_buildDTable(dt, norm, nbSymbols, tableLog);
+    FSE_buildDTable(dt, norm, nbSymbols, tableLog, scrambler);
 
     DISPLAY("\r%79s\r", "");
     for (loopNb = 1; loopNb <= nbIterations; loopNb++)

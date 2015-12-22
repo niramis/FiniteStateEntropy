@@ -181,6 +181,7 @@ static void FUZ_tests (U32 seed, U32 totalTest, U32 startTestNb)
         int tag=0;
         U32 roundSeed = rootSeed ^ 0xEDA5B371;
         FUZ_rand(&rootSeed);
+		unsigned scrambler = 1;
 
         DISPLAYLEVEL (4, "\r test %5u  ", testNb);
         if (FUZ_GetMilliSpan (time) > FUZ_UPDATERATE)
@@ -212,7 +213,7 @@ static void FUZ_tests (U32 seed, U32 totalTest, U32 startTestNb)
             hashOrig = XXH32 (bufferTest, sizeOrig, 0);
 
             /* compress test */
-            sizeCompressed = FSE_compress (bufferDst, bufferDstSize, bufferTest, sizeOrig);
+            sizeCompressed = FSE_compress (bufferDst, bufferDstSize, bufferTest, sizeOrig, 1);
             CHECK(FSE_isError(sizeCompressed), "Compression failed !");
 
             if (sizeCompressed > 1)   /* don't check uncompressed & rle corner cases */
@@ -222,7 +223,7 @@ static void FUZ_tests (U32 seed, U32 totalTest, U32 startTestNb)
                     size_t errorCode;
                     void* tooSmallDBuffer = malloc(sizeCompressed-1);   /* overflows detected with Valgrind */
                     CHECK(tooSmallDBuffer==NULL, "Not enough memory for tooSmallDBuffer test");
-                    errorCode = FSE_compress (tooSmallDBuffer, sizeCompressed-1, bufferTest, sizeOrig);
+					errorCode = FSE_compress(tooSmallDBuffer, sizeCompressed - 1, bufferTest, sizeOrig, scrambler);
                     CHECK(errorCode!=0, "Compression should have failed : destination buffer too small");
                     free(tooSmallDBuffer);
                 }
@@ -231,7 +232,7 @@ static void FUZ_tests (U32 seed, U32 totalTest, U32 startTestNb)
                 {
                     U32 hashEnd;
                     BYTE saved = (bufferVerif[sizeOrig] = 254);
-                    size_t result = FSE_decompress (bufferVerif, sizeOrig, bufferDst, sizeCompressed);
+					size_t result = FSE_decompress(bufferVerif, sizeOrig, bufferDst, sizeCompressed, scrambler);
                     CHECK(bufferVerif[sizeOrig] != saved, "Output buffer overrun (bufferVerif) : write beyond specified end");
                     CHECK(FSE_isError(result), "Decompression failed");
                     hashEnd = XXH32 (bufferVerif, sizeOrig, 0);
@@ -264,7 +265,7 @@ static void FUZ_tests (U32 seed, U32 totalTest, U32 startTestNb)
             BYTE saved = (bufferDst[maxDstSize] = 253);
             size_t result;
             DISPLAYLEVEL (4,"\b\b\b\b%3i ", tag++);;
-            result = FSE_decompress (bufferDst, maxDstSize, bufferTest, sizeCompressed);
+            result = FSE_decompress (bufferDst, maxDstSize, bufferTest, sizeCompressed, scrambler);
             CHECK(!FSE_isError(result) && (result > maxDstSize), "Decompression overran output buffer");
             CHECK(bufferDst[maxDstSize] != saved, "Output buffer bufferDst corrupted");
         }
@@ -447,14 +448,15 @@ static void unitTest(void)
 
     /* known corner case */
     {
+		unsigned scrambler = 3;
         BYTE sample8[8] = { 0, 0, 0, 2, 0, 0, 0, 0 };
         BYTE* rBuff;
-        errorCode = FSE_compress(cBuff, TBSIZE, sample8, 8);
+		errorCode = FSE_compress(cBuff, TBSIZE, sample8, 8, scrambler);
         CHECK(FSE_isError(errorCode), "FSE_compress failed compressing sample8");
         rBuff = (BYTE*)malloc(errorCode);   /* in order to catch read overflow with Valgrind */
         CHECK(rBuff==NULL, "Not enough memory for rBuff");
         memcpy(rBuff, cBuff, errorCode);
-        errorCode = FSE_decompress(verifBuff, sizeof(sample8), rBuff, errorCode);
+        errorCode = FSE_decompress(verifBuff, sizeof(sample8), rBuff, errorCode, scrambler);
         CHECK(errorCode != sizeof(sample8), "FSE_decompress failed regenerating sample8");
         free(rBuff);
     }

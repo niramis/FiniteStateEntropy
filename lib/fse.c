@@ -302,9 +302,10 @@ size_t FSE_FUNCTION_NAME(FSE_buildCTable, FSE_FUNCTION_EXTENSION)
         }
     } 
 
-	// tutaj dodaæ jakiœ scrambler z mieszaniem opatry na haœle
+	// tutaj dodaæ jakiœ scrambler z mieszaniem
 	FSE_FUNCTION_TYPE item;
-	for (i = 0; i < tableSize - scrambler; i++)
+	unsigned size = tableSize - scrambler;
+	for (i = 0; i < size; i++)
 	{
 		item = tableSymbol[i];
 		tableSymbol[i] = tableSymbol[i + scrambler];
@@ -371,7 +372,7 @@ typedef struct {
 } FSE_DTableHeader;   /* sizeof U32 */
 
 size_t FSE_FUNCTION_NAME(FSE_buildDTable, FSE_FUNCTION_EXTENSION)
-(FSE_DTable* dt, const short* normalizedCounter, unsigned maxSymbolValue, unsigned tableLog)
+(FSE_DTable* dt, const short* normalizedCounter, unsigned maxSymbolValue, unsigned tableLog, unsigned scrambler)
 {
     FSE_DTableHeader* const DTableH = (FSE_DTableHeader*)dt;
     FSE_DECODE_TYPE* const tableDecode = (FSE_DECODE_TYPE*) (dt+1);   /* because dt is unsigned, 32-bits aligned on 32-bits */
@@ -419,11 +420,12 @@ size_t FSE_FUNCTION_NAME(FSE_buildDTable, FSE_FUNCTION_EXTENSION)
 
 	// tutaj dodaæ jakiœ scrambler odmieszaj¹cy
 	FSE_DECODE_TYPE item;
-	for (s = 0; s < tableSize - 1; s++)
+	unsigned size = tableSize - scrambler;
+	for (s = 0; s < size; s++)
 	{
 		item = tableDecode[s];
-		tableDecode[s] = tableDecode[s + 1];
-		tableDecode[s + 1] = item;
+		tableDecode[s] = tableDecode[s + scrambler];
+		tableDecode[s + scrambler] = item;
 	}
 
     if (position!=0) return ERROR(GENERIC);   /* position must reach all cells once, otherwise normalizedCounter is incorrect */
@@ -1075,7 +1077,7 @@ size_t FSE_compress_usingCTable (void* dst, size_t dstSize,
 
 size_t FSE_compressBound(size_t size) { return FSE_COMPRESSBOUND(size); }
 
-size_t FSE_compress2 (void* dst, size_t dstSize, const void* src, size_t srcSize, unsigned maxSymbolValue, unsigned tableLog)
+size_t FSE_compress2(void* dst, size_t dstSize, const void* src, size_t srcSize, unsigned maxSymbolValue, unsigned tableLog, unsigned scrambler)
 {
     const BYTE* const istart = (const BYTE*) src;
     const BYTE* ip = istart;
@@ -1111,7 +1113,7 @@ size_t FSE_compress2 (void* dst, size_t dstSize, const void* src, size_t srcSize
     op += errorCode;
 
     /* Compress */
-    errorCode = FSE_buildCTable (ct, norm, maxSymbolValue, tableLog, 1);
+    errorCode = FSE_buildCTable (ct, norm, maxSymbolValue, tableLog, scrambler);
     if (FSE_isError(errorCode)) return errorCode;
     errorCode = FSE_compress_usingCTable(op, oend - op, ip, srcSize, ct);
     if (errorCode == 0) return 0;   /* not enough space for compressed data */
@@ -1124,9 +1126,9 @@ size_t FSE_compress2 (void* dst, size_t dstSize, const void* src, size_t srcSize
     return op-ostart;
 }
 
-size_t FSE_compress (void* dst, size_t dstSize, const void* src, size_t srcSize)
+size_t FSE_compress (void* dst, size_t dstSize, const void* src, size_t srcSize, unsigned scrambler)
 {
-    return FSE_compress2(dst, dstSize, src, (U32)srcSize, FSE_MAX_SYMBOL_VALUE, FSE_DEFAULT_TABLELOG);
+	return FSE_compress2(dst, dstSize, src, (U32)srcSize, FSE_MAX_SYMBOL_VALUE, FSE_DEFAULT_TABLELOG, scrambler);
 }
 
 
@@ -1293,7 +1295,7 @@ size_t FSE_decompress_usingDTable(void* dst, size_t originalSize,
 }
 
 
-size_t FSE_decompress(void* dst, size_t maxDstSize, const void* cSrc, size_t cSrcSize)
+size_t FSE_decompress(void* dst, size_t maxDstSize, const void* cSrc, size_t cSrcSize, unsigned scrambler)
 {
     const BYTE* const istart = (const BYTE*)cSrc;
     const BYTE* ip = istart;
@@ -1311,8 +1313,8 @@ size_t FSE_decompress(void* dst, size_t maxDstSize, const void* cSrc, size_t cSr
     if (errorCode >= cSrcSize) return ERROR(srcSize_wrong);   /* too small input size */
     ip += errorCode;
     cSrcSize -= errorCode;
-
-    errorCode = FSE_buildDTable (dt, counting, maxSymbolValue, tableLog);
+	
+    errorCode = FSE_buildDTable (dt, counting, maxSymbolValue, tableLog, scrambler);
     if (FSE_isError(errorCode)) return errorCode;
 
     /* always return, even if it is an error code */

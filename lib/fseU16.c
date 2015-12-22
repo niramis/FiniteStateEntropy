@@ -265,8 +265,8 @@ size_t FSE_decompressU16(U16* dst, size_t maxDstSize,
     if (FSE_isError(errorCode)) return errorCode;
     ip += errorCode;
     cSrcSize -= errorCode;
-
-    errorCode = FSE_buildDTableU16 (dt, counting, maxSymbolValue, tableLog);
+	unsigned scrambler = 1;
+    errorCode = FSE_buildDTableU16 (dt, counting, maxSymbolValue, tableLog, scrambler);
     if (FSE_isError(errorCode)) return errorCode;
 
     return FSE_decompressU16_usingDTable (dst, maxDstSize, ip, cSrcSize, dt);
