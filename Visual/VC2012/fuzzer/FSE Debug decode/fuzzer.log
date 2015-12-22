@@ -1,0 +1,21 @@
+﻿Build started 2015-12-22 20:19:58.
+     1>Project "F:\Dokumenty\Studia\Magisterka\Projekt indywidualny\Projekt\FiniteStateEntropy\Visual\VC2012\fuzzer\fuzzer.vcxproj" on node 3 (Rebuild target(s)).
+     1>ClCompile:
+         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\CL.exe /c /ZI /nologo /W4 /WX /Od /Oy- /D CODE_ANALYSIS /D WIN32 /D _DEBUG /D _CONSOLE /D _UNICODE /D UNICODE /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"FSE Debug decode\\" /Fd"FSE Debug decode\vc120.pdb" /Gd /TC /analyze /analyze:plugin"C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\\bin\localespc.dll" /errorReport:prompt /analyze:stacksize18000   /analyze:quiet ..\..\..\lib\fse.c ..\..\..\programs\fuzzer.c ..\..\..\programs\xxhash.c
+         xxhash.c
+         fuzzer.c
+         fse.c
+         Running Code Analysis for C/C++...
+         Generating Code...
+       Link:
+         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"F:\Dokumenty\Studia\Magisterka\Projekt indywidualny\Projekt\FiniteStateEntropy\Visual\VC2012\FSE Debug decode\fuzzer.exe" /INCREMENTAL /NOLOGO kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"F:\Dokumenty\Studia\Magisterka\Projekt indywidualny\Projekt\FiniteStateEntropy\Visual\VC2012\FSE Debug decode\fuzzer.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"F:\Dokumenty\Studia\Magisterka\Projekt indywidualny\Projekt\FiniteStateEntropy\Visual\VC2012\FSE Debug decode\fuzzer.lib" /MACHINE:X86 "FSE Debug decode\fse.obj"
+         "FSE Debug decode\fuzzer.obj"
+         "FSE Debug decode\xxhash.obj"
+         fuzzer.vcxproj -> F:\Dokumenty\Studia\Magisterka\Projekt indywidualny\Projekt\FiniteStateEntropy\Visual\VC2012\FSE Debug decode\fuzzer.exe
+     1>f:\dokumenty\studia\magisterka\projekt indywidualny\projekt\finitestateentropy\lib\fse.c(319): warning C6001: Using uninitialized memory 'tableSymbol'.
+     1>f:\dokumenty\studia\magisterka\projekt indywidualny\projekt\finitestateentropy\lib\bitstream.h(155): warning C6001: Using uninitialized memory 'r'.
+     1>Done Building Project "F:\Dokumenty\Studia\Magisterka\Projekt indywidualny\Projekt\FiniteStateEntropy\Visual\VC2012\fuzzer\fuzzer.vcxproj" (Rebuild target(s)).
+
+Build succeeded.
+
+Time Elapsed 00:00:02.13

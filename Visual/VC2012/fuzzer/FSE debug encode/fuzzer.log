@@ -1,21 +1,18 @@
-﻿Build started 2015-12-22 20:00:33.
+﻿Build started 2015-12-22 20:47:51.
      1>Project "F:\Dokumenty\Studia\Magisterka\Projekt indywidualny\Projekt\FiniteStateEntropy\Visual\VC2012\fuzzer\fuzzer.vcxproj" on node 3 (Rebuild target(s)).
      1>ClCompile:
          C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\CL.exe /c /ZI /nologo /W4 /WX /Od /Oy- /D CODE_ANALYSIS /D WIN32 /D _DEBUG /D _CONSOLE /D _UNICODE /D UNICODE /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"FSE debug encode\\" /Fd"FSE debug encode\vc120.pdb" /Gd /TC /analyze /analyze:plugin"C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\\bin\localespc.dll" /errorReport:prompt /analyze:stacksize18000   /analyze:quiet ..\..\..\lib\fse.c ..\..\..\programs\fuzzer.c ..\..\..\programs\xxhash.c
          xxhash.c
          fuzzer.c
          fse.c
+     1>f:\dokumenty\studia\magisterka\projekt indywidualny\projekt\finitestateentropy\lib\fse.c(259): error C2220: warning treated as error - no 'object' file generated
+     1>f:\dokumenty\studia\magisterka\projekt indywidualny\projekt\finitestateentropy\lib\fse.c(259): warning C4029: declared formal parameter list different from definition
+     1>f:\dokumenty\studia\magisterka\projekt indywidualny\projekt\finitestateentropy\lib\fse.c(1079): warning C4029: declared formal parameter list different from definition
+     1>f:\dokumenty\studia\magisterka\projekt indywidualny\projekt\finitestateentropy\lib\fse.c(1128): warning C4028: formal parameter 5 different from declaration
          Running Code Analysis for C/C++...
          Generating Code...
-       Link:
-         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"F:\Dokumenty\Studia\Magisterka\Projekt indywidualny\Projekt\FiniteStateEntropy\Visual\VC2012\FSE debug encode\fuzzer.exe" /INCREMENTAL /NOLOGO kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"F:\Dokumenty\Studia\Magisterka\Projekt indywidualny\Projekt\FiniteStateEntropy\Visual\VC2012\FSE debug encode\fuzzer.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"F:\Dokumenty\Studia\Magisterka\Projekt indywidualny\Projekt\FiniteStateEntropy\Visual\VC2012\FSE debug encode\fuzzer.lib" /MACHINE:X86 "FSE debug encode\fse.obj"
-         "FSE debug encode\fuzzer.obj"
-         "FSE debug encode\xxhash.obj"
-         fuzzer.vcxproj -> F:\Dokumenty\Studia\Magisterka\Projekt indywidualny\Projekt\FiniteStateEntropy\Visual\VC2012\FSE debug encode\fuzzer.exe
-     1>f:\dokumenty\studia\magisterka\projekt indywidualny\projekt\finitestateentropy\lib\fse.c(319): warning C6001: Using uninitialized memory 'tableSymbol'.
-     1>f:\dokumenty\studia\magisterka\projekt indywidualny\projekt\finitestateentropy\lib\bitstream.h(155): warning C6001: Using uninitialized memory 'r'.
-     1>Done Building Project "F:\Dokumenty\Studia\Magisterka\Projekt indywidualny\Projekt\FiniteStateEntropy\Visual\VC2012\fuzzer\fuzzer.vcxproj" (Rebuild target(s)).
+     1>Done Building Project "F:\Dokumenty\Studia\Magisterka\Projekt indywidualny\Projekt\FiniteStateEntropy\Visual\VC2012\fuzzer\fuzzer.vcxproj" (Rebuild target(s)) -- FAILED.
 
-Build succeeded.
+Build FAILED.
 
-Time Elapsed 00:00:02.86
+Time Elapsed 00:00:01.29
